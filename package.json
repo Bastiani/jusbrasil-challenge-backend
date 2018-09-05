@@ -1,0 +1,80 @@
+{
+  "name": "nodejs-login-boilerplate",
+  "version": "1.0.0",
+  "description": "boilerplate for start a project with nodejs/koa",
+  "main": "src/index.js",
+  "scripts": {
+    "clean": "rimraf lib",
+    "start": "node lib/index.js",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "babel-node": "./node_modules/.bin/babel-node src/index.js",
+    "nodemon": "nodemon --exec npm run babel-node -- src/index.js",
+    "build": "npm run clean && mkdir -p lib && ./node_modules/.bin/babel src -s -D -d lib",
+    "lint": "./node_modules/.bin/eslint src/*.js",
+    "prepush": "yarn run lint",
+    "prepublish": "yarn run build"
+  },
+  "keywords": [
+    "koa",
+    "babel",
+    "boilerplate",
+    "scaffold",
+    "es6",
+    "es2015",
+    "es2016",
+    "es2017",
+    "jest",
+    "eslint"
+  ],
+  "author": "Rafael Bastiani <rafacdb@gmail.com> (https://rafaelbastiani.com/)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bastiani/nodejs-login-boilerplate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Bastiani/nodejs-login-boilerplate/issues"
+  },
+  "homepage": "https://github.com/Bastiani/nodejs-login-boilerplate#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^8.2.5",
+    "babel-jest": "^23.2.0",
+    "babel-plugin-syntax-object-rest-spread": "^6.13.0",
+    "babel-plugin-transform-export-extensions": "^6.22.0",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-flow": "^6.23.0",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb": "^17.0.0",
+    "eslint-config-airbnb-base": "^13.0.0",
+    "eslint-plugin-flowtype": "^2.49.3",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-jest": "^21.17.0",
+    "flow-bin": "^0.75.0",
+    "husky": "^0.14.3",
+    "jest": "^21.2.1",
+    "jest-cli": "^21.2.1",
+    "prettier": "^1.13.7",
+    "rimraf": "^2.6.2"
+  },
+  "dependencies": {
+    "@entria/graphql-mongoose-loader": "^2.0.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.2",
+    "dataloader": "^1.4.0",
+    "graphql": "^0.13.2",
+    "graphql-playground-middleware": "^1.1.2",
+    "graphql-relay": "^0.5.5",
+    "jsonwebtoken": "^8.3.0",
+    "koa": "^2.4.1",
+    "koa-convert": "^1.2.0",
+    "koa-cors": "^0.0.16",
+    "koa-graphql": "^0.7.5",
+    "koa-router": "^7.3.0",
+    "mongoose": "^5.1.5",
+    "nodemon": "^1.17.5"
+  }
+}

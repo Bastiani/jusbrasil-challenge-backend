@@ -1,0 +1,13 @@
+{
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "node": "current"
+        }
+      }
+    ]
+  ],
+  "plugins": ["syntax-object-rest-spread", "transform-export-extensions", "transform-flow-strip-types"]
+}
