@@ -10,6 +10,6 @@ export default function connectDatabase() {
       .on('close', () => console.log('Database connection closed.'))
       .once('open', () => resolve(mongoose.connections[0]));
 
-    mongoose.connect('mongodb://localhost/nodejs-login-boilerplate');
+    mongoose.connect('mongodb://localhost/jusbrasil');
   });
 }
