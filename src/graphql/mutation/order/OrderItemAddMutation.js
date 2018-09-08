@@ -32,8 +32,6 @@ const mutation = mutationWithClientMutationId({
       total,
     };
 
-    console.log('=====>>>>>>>', order._id);
-
     await OrderModel.findOneAndUpdate(
       {
         _id: order._id,
