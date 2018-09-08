@@ -5,6 +5,8 @@
 - `yarn nodemon`
 - open http://localhost:5000/playground
 
+![](https://raw.githubusercontent.com/Bastiani/jusbrasil-challenge-backend/master/docs/playground.gif)
+
 # Node.js/Koa API boilerplate
 
 ref. [Entria Boilerplate](https://github.com/entria/graphql-dataloader-boilerplate)
