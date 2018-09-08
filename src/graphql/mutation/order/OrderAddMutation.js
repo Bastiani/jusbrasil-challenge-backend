@@ -8,10 +8,12 @@ import OrderType from '../../../modules/order/OrderType';
 
 import OrderFieldsType from '../../../modules/order/OrderFieldsType';
 
+const { id, ...orderInput } = OrderFieldsType;
+
 const mutation = mutationWithClientMutationId({
   name: 'OrderAdd',
   inputFields: {
-    ...OrderFieldsType,
+    ...orderInput,
   },
   mutateAndGetPayload: async args => {
     const { qty, total } = args;

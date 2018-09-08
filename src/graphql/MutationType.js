@@ -10,6 +10,7 @@ import UserLoginMutation from './mutation/user/UserLoginMutation';
 import ProductAddMutation from './mutation/product/ProductAddMutation';
 import OrderAddMutation from './mutation/order/OrderAddMutation';
 import OrderItemAddMutation from './mutation/order/OrderItemAddMutation';
+import OrderItemEditMutation from './mutation/order/OrderItemEditMutation';
 
 export default new GraphQLObjectType({
   name: 'Mutation',
@@ -22,5 +23,6 @@ export default new GraphQLObjectType({
     // Order
     OrderAddMutation,
     OrderItemAddMutation,
+    OrderItemEditMutation,
   }),
 });
