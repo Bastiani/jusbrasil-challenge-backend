@@ -1,4 +1,12 @@
+# jusbrasil challenge
+
+- `git clone git@github.com:Bastiani/jusbrasil-challenge-backend.git`
+- `yarn`
+- `yarn nodemon`
+- open http://localhost:5000/playground
+
 # Node.js/Koa API boilerplate
+
 ref. [Entria Boilerplate](https://github.com/entria/graphql-dataloader-boilerplate)
 
 My boilerplate for start NodeJS/Koa with Jest/Babel/ESLint/GraphQL/Auth
@@ -15,4 +23,3 @@ This project is licensed under the MIT License - see the
 [LICENSE.md](LICENSE.md) file for details
 
 # nodejs-boilerplate-koa
-# jusbrasil-challenge-backend
