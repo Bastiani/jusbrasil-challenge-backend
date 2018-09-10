@@ -31,7 +31,7 @@ const OrderItemType = registerType(
           resolve: obj => obj.qty,
         },
         total: {
-          type: GraphQLNonNull(GraphQLString),
+          type: GraphQLNonNull(GraphQLInt),
           description: 'Total of the products',
           resolve: obj => obj.total,
         },

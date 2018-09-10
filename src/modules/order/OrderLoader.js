@@ -18,9 +18,9 @@ export default class Order {
 
   orderItems: Array<OrderItemType>;
 
-  qty: string;
+  qty: number;
 
-  total: string;
+  total: number;
 
   constructor(data: OrderFlowType) {
     this.id = data.id;

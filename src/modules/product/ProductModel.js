@@ -9,9 +9,8 @@ const Schema = new mongoose.Schema(
       index: true,
     },
     value: {
-      type: String,
+      type: Number,
       required: true,
-      trim: true,
     },
     qty: {
       type: Number,

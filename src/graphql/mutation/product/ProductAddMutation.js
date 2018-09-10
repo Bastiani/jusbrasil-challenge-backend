@@ -1,34 +1,16 @@
-import { GraphQLString, GraphQLNonNull, GraphQLInt, GraphQLBoolean } from 'graphql';
+import { GraphQLString } from 'graphql';
 import { mutationWithClientMutationId } from 'graphql-relay';
 
 import Product from '../../../modules/product/ProductModel';
 
 import * as ProductLoader from '../../../modules/product/ProductLoader';
 import ProductType from '../../../modules/product/ProductType';
+import { ProductInputType } from '../../../modules/product/ProductInputType';
 
 const mutation = mutationWithClientMutationId({
   name: 'ProductAdd',
   inputFields: {
-    description: {
-      type: GraphQLNonNull(GraphQLString),
-      description: 'Description of the product',
-    },
-    value: {
-      type: GraphQLNonNull(GraphQLString),
-      description: 'Value of the product',
-    },
-    qty: {
-      type: GraphQLInt,
-      description: 'Quantity of the product',
-    },
-    picture: {
-      type: GraphQLNonNull(GraphQLString),
-      description: 'URL of the product',
-    },
-    active: {
-      type: GraphQLNonNull(GraphQLBoolean),
-      description: 'Active of the product',
-    },
+    ...ProductInputType,
   },
   mutateAndGetPayload: async args => {
     const { description, value, qty, picture, active } = args;

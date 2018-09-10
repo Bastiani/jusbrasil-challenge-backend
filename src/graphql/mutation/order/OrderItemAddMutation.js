@@ -1,12 +1,13 @@
 import { GraphQLString } from 'graphql';
-import { mutationWithClientMutationId, toGlobalId, fromGlobalId } from 'graphql-relay';
+import { mutationWithClientMutationId, fromGlobalId } from 'graphql-relay';
 
 import OrderModel from '../../../modules/order/OrderModel';
+import ProductModel from '../../../modules/product/ProductModel';
 
 import * as OrderLoader from '../../../modules/order/OrderLoader';
 import OrderType from '../../../modules/order/OrderType';
 
-import OrderItemFieldsType from '../../../modules/order/OrderItemFieldsType';
+import OrderItemFieldsType, { OPERATION_TYPE } from '../../../modules/order/OrderItemFieldsType';
 
 const mutation = mutationWithClientMutationId({
   name: 'OrderItemAdd',
@@ -14,7 +15,7 @@ const mutation = mutationWithClientMutationId({
     ...OrderItemFieldsType,
   },
   mutateAndGetPayload: async (args, context) => {
-    const { orderId, product, qty, total } = args;
+    const { orderId, product, qty } = args;
 
     // Check if the provided ID is valid
     const order = await OrderModel.findOne({
@@ -26,17 +27,46 @@ const mutation = mutationWithClientMutationId({
       throw new Error('Invalid orderId');
     }
 
+    // Check if the provided ID is valid
+    const productSelected = await ProductModel.findOne({
+      _id: fromGlobalId(product).id,
+    });
+
+    // If not, throw an error
+    if (!productSelected) {
+      throw new Error('Invalid product');
+    }
+
+    const { qty: productQty, value: productValue } = productSelected;
+    const { qty: orderQty, total: orderTotal } = order;
+
+    if (qty > productQty) throw new Error('Quantity is invalid');
+
+    const totalValueItem = productValue * qty;
+    const totalValueOrder = orderTotal + totalValueItem;
+    const totalQtyOrder = orderQty + qty;
+
     const orderItem = {
       product: fromGlobalId(product).id,
       qty,
-      total,
+      total: totalValueItem,
     };
+
+    await ProductModel.findOneAndUpdate(
+      {
+        _id: productSelected._id,
+      },
+      {
+        $set: { qty: productQty - qty },
+      },
+    );
 
     await OrderModel.findOneAndUpdate(
       {
         _id: order._id,
       },
       {
+        $set: { qty: totalQtyOrder, total: totalValueOrder },
         $push: {
           orderItems: orderItem,
         },
