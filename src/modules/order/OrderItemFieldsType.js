@@ -1,4 +1,4 @@
-import { GraphQLID, GraphQLNonNull, GraphQLString, GraphQLInt } from 'graphql';
+import { GraphQLID, GraphQLNonNull, GraphQLInt } from 'graphql';
 
 export default {
   orderId: {
@@ -12,9 +12,5 @@ export default {
   qty: {
     type: GraphQLNonNull(GraphQLInt),
     description: 'Quantity of the order item',
-  },
-  total: {
-    type: GraphQLNonNull(GraphQLString),
-    description: 'Total of the order item',
   },
 };

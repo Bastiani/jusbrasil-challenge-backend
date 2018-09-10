@@ -9,8 +9,4 @@ export default {
     type: GraphQLNonNull(GraphQLInt),
     description: 'Quantity of the products',
   },
-  total: {
-    type: GraphQLNonNull(GraphQLString),
-    description: 'Total of the products',
-  },
 };

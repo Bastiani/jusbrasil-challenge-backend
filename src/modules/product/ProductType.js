@@ -26,7 +26,7 @@ const ProductType = registerType(
           resolve: product => product.description,
         },
         value: {
-          type: GraphQLNonNull(GraphQLString),
+          type: GraphQLNonNull(GraphQLInt),
           description: 'Value of the product',
           resolve: product => product.value,
         },

@@ -19,7 +19,7 @@ export default class Product {
 
   description: string;
 
-  value: string;
+  value: number;
 
   qty: number;
 
