@@ -22,12 +22,15 @@ export default class Order {
 
   total: number;
 
+  active: boolean;
+
   constructor(data: OrderFlowType) {
     this.id = data.id;
     this._id = data._id;
     this.orderItems = data.orderItems;
     this.qty = data.qty;
     this.total = data.total;
+    this.active = data.active;
   }
 }
 

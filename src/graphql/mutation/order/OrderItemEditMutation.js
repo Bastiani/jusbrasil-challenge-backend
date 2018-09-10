@@ -61,8 +61,6 @@ const mutation = mutationWithClientMutationId({
     const { qty: productQty, value: productValue } = productSelected;
     const { qty: orderQty, total: orderTotal } = order;
 
-    if (qty > productQty) throw new Error('Quantity is invalid');
-
     const orderItem = await OrderModel.findOne(
       { _id: fromGlobalId(orderId).id },
       { orderItems: { $elemMatch: { product: fromGlobalId(product).id } } },
@@ -74,14 +72,16 @@ const mutation = mutationWithClientMutationId({
     const totalQtyOrder = operation === OPERATION_TYPE.ADD ? orderQty + qty : orderQty - qty;
     const totalQtyProduct = operation === OPERATION_TYPE.ADD ? productQty - qty : productQty + qty;
 
-    await ProductModel.findOneAndUpdate(
-      {
-        _id: fromGlobalId(product).id,
-      },
-      {
-        $set: { qty: totalQtyProduct },
-      },
-    );
+    if (totalQtyProduct <= 0 || totalQtyProduct > productQty) throw new Error('Quantity is invalid');
+
+    // await ProductModel.findOneAndUpdate(
+    //   {
+    //     _id: fromGlobalId(product).id,
+    //   },
+    //   {
+    //     $set: { qty: totalQtyProduct },
+    //   },
+    // );
 
     await OrderModel.findOneAndUpdate(
       {
