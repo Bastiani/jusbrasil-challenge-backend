@@ -1,4 +1,4 @@
-import { GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt } from 'graphql';
+import { GraphQLBoolean, GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt } from 'graphql';
 import { globalIdField } from 'graphql-relay';
 
 import { connectionDefinitions } from '../../graphql/connection/customConnection';
@@ -36,6 +36,11 @@ const OrderType = registerType(
           type: GraphQLInt,
           description: 'Total of the products',
           resolve: order => order.total,
+        },
+        active: {
+          type: GraphQLNonNull(GraphQLBoolean),
+          description: 'Active of the product',
+          resolve: order => order.active,
         },
       }),
       interfaces: () => [nodeInterface],

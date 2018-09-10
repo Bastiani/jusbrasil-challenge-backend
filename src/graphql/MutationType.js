@@ -8,7 +8,10 @@ import UserLoginMutation from './mutation/user/UserLoginMutation';
 
 // Product
 import ProductAddMutation from './mutation/product/ProductAddMutation';
+
+// Order
 import OrderAddMutation from './mutation/order/OrderAddMutation';
+import OrderCloseMutation from './mutation/order/OrderCloseMutation';
 import OrderItemAddMutation from './mutation/order/OrderItemAddMutation';
 import OrderItemEditMutation from './mutation/order/OrderItemEditMutation';
 
@@ -22,6 +25,7 @@ export default new GraphQLObjectType({
     ProductAddMutation,
     // Order
     OrderAddMutation,
+    OrderCloseMutation,
     OrderItemAddMutation,
     OrderItemEditMutation,
   }),

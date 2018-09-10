@@ -52,14 +52,14 @@ const mutation = mutationWithClientMutationId({
       total: totalValueItem,
     };
 
-    await ProductModel.findOneAndUpdate(
-      {
-        _id: productSelected._id,
-      },
-      {
-        $set: { qty: productQty - qty },
-      },
-    );
+    // await ProductModel.findOneAndUpdate(
+    //   {
+    //     _id: productSelected._id,
+    //   },
+    //   {
+    //     $set: { qty: productQty - qty },
+    //   },
+    // );
 
     await OrderModel.findOneAndUpdate(
       {

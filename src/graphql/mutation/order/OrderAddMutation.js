@@ -1,4 +1,4 @@
-import { GraphQLString } from 'graphql';
+import { GraphQLString, GraphQLNonNull, GraphQLInt } from 'graphql';
 import { mutationWithClientMutationId } from 'graphql-relay';
 
 import Order from '../../../modules/order/OrderModel';
@@ -6,21 +6,19 @@ import Order from '../../../modules/order/OrderModel';
 import * as OrderLoader from '../../../modules/order/OrderLoader';
 import OrderType from '../../../modules/order/OrderType';
 
-import OrderFieldsType from '../../../modules/order/OrderFieldsType';
-
-const { id, ...orderInput } = OrderFieldsType;
-
 const mutation = mutationWithClientMutationId({
   name: 'OrderAdd',
   inputFields: {
-    ...orderInput,
+    qty: {
+      type: GraphQLNonNull(GraphQLInt),
+      description: 'Quantity of the order',
+    },
   },
   mutateAndGetPayload: async args => {
-    const { qty, total } = args;
+    const { qty } = args;
 
     const newOrder = await new Order({
       qty,
-      total,
     }).save();
 
     return {
