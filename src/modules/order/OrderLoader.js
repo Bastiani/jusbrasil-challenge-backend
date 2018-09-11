@@ -55,7 +55,12 @@ export const load = async (context: GraphQLContext, id: string): Promise<?Order>
 export const clearCache = ({ dataloaders }: GraphQLContext, id: string) => dataloaders.OrderLoader.clear(id.toString());
 
 export const loadOrders = async (context: GraphQLContext, args: ConnectionArguments & Args) => {
-  const orders = OrderModel.find().sort({ createdAt: -1 });
+  const { active } = args;
+  const conditions = {
+    ...(active != null ? { active } : {}),
+  };
+
+  const orders = OrderModel.find(conditions).sort({ createdAt: -1 });
 
   return connectionFromMongoCursor({
     cursor: orders,

@@ -2,12 +2,14 @@ import { GraphQLString } from 'graphql';
 import { mutationWithClientMutationId, fromGlobalId } from 'graphql-relay';
 
 import OrderModel from '../../../modules/order/OrderModel';
-import ProductModel from '../../../modules/product/ProductModel';
 
 import * as OrderLoader from '../../../modules/order/OrderLoader';
 import OrderType from '../../../modules/order/OrderType';
 
-import OrderItemFieldsType, { OPERATION_TYPE } from '../../../modules/order/OrderItemFieldsType';
+import OrderItemFieldsType from '../../../modules/order/OrderItemFieldsType';
+
+import AddItem from './AddItem';
+import EditItem, { OPERATION_TYPE } from './EditItem';
 
 const mutation = mutationWithClientMutationId({
   name: 'OrderItemAdd',
@@ -27,51 +29,34 @@ const mutation = mutationWithClientMutationId({
       throw new Error('Invalid orderId');
     }
 
-    // Check if the provided ID is valid
-    const productSelected = await ProductModel.findOne({
-      _id: fromGlobalId(product).id,
+    const orderWithItem = await OrderModel.findOne({
+      $and: [{ _id: fromGlobalId(orderId).id, 'orderItems.product': fromGlobalId(product).id }],
     });
 
-    // If not, throw an error
-    if (!productSelected) {
-      throw new Error('Invalid product');
-    }
+    if (orderWithItem) {
+      const { message } = await EditItem(orderId, product, qty, OPERATION_TYPE.ADD);
+      if (message) throw new Error('Error while editing item');
+    } else {
+      const { qty: orderQty, total: orderTotal } = order;
 
-    const { qty: productQty, value: productValue } = productSelected;
-    const { qty: orderQty, total: orderTotal } = order;
+      const newItem = await AddItem(product, qty);
+      const { total: totalItem } = newItem;
 
-    if (qty > productQty) throw new Error('Quantity is invalid');
+      const totalValueOrder = orderTotal + totalItem;
+      const totalQtyOrder = orderQty + qty;
 
-    const totalValueItem = productValue * qty;
-    const totalValueOrder = orderTotal + totalValueItem;
-    const totalQtyOrder = orderQty + qty;
-
-    const orderItem = {
-      product: fromGlobalId(product).id,
-      qty,
-      total: totalValueItem,
-    };
-
-    // await ProductModel.findOneAndUpdate(
-    //   {
-    //     _id: productSelected._id,
-    //   },
-    //   {
-    //     $set: { qty: productQty - qty },
-    //   },
-    // );
-
-    await OrderModel.findOneAndUpdate(
-      {
-        _id: order._id,
-      },
-      {
-        $set: { qty: totalQtyOrder, total: totalValueOrder },
-        $push: {
-          orderItems: orderItem,
+      await OrderModel.findOneAndUpdate(
+        {
+          _id: order._id,
         },
-      },
-    );
+        {
+          $set: { qty: totalQtyOrder, total: totalValueOrder },
+          $push: {
+            orderItems: newItem,
+          },
+        },
+      );
+    }
 
     // Clear dataloader cache
     OrderLoader.clearCache(context, order._id);

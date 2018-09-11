@@ -1,25 +1,45 @@
-import { GraphQLString, GraphQLNonNull, GraphQLInt } from 'graphql';
+import { GraphQLString } from 'graphql';
 import { mutationWithClientMutationId } from 'graphql-relay';
 
-import Order from '../../../modules/order/OrderModel';
+import OrderModel from '../../../modules/order/OrderModel';
 
 import * as OrderLoader from '../../../modules/order/OrderLoader';
 import OrderType from '../../../modules/order/OrderType';
+import OrderItemFieldsType from '../../../modules/order/OrderItemFieldsType';
+
+import AddItem from './AddItem';
+
+const { orderId, ...orderItem } = OrderItemFieldsType;
 
 const mutation = mutationWithClientMutationId({
   name: 'OrderAdd',
   inputFields: {
-    qty: {
-      type: GraphQLNonNull(GraphQLInt),
-      description: 'Quantity of the order',
-    },
+    ...orderItem,
   },
-  mutateAndGetPayload: async args => {
-    const { qty } = args;
+  mutateAndGetPayload: async (args, context) => {
+    const { product, qty } = args;
 
-    const newOrder = await new Order({
+    const newOrder = await new OrderModel({
       qty,
     }).save();
+
+    const newItem = await AddItem(product, qty);
+    const { qty: totalQtyItem, total: totalItem } = newItem;
+
+    await OrderModel.findOneAndUpdate(
+      {
+        _id: newOrder._id,
+      },
+      {
+        $set: { qty: totalQtyItem, total: totalItem },
+        $push: {
+          orderItems: newItem,
+        },
+      },
+    );
+
+    // Clear dataloader cache
+    OrderLoader.clearCache(context, newOrder._id);
 
     return {
       id: newOrder._id,
@@ -29,8 +49,8 @@ const mutation = mutationWithClientMutationId({
   outputFields: {
     order: {
       type: OrderType,
-      resolve: async ({ id: orderId }, args, context) => {
-        const newOrder = await OrderLoader.load(context, orderId);
+      resolve: async ({ id }, args, context) => {
+        const newOrder = await OrderLoader.load(context, id);
 
         if (!newOrder) {
           return null;
