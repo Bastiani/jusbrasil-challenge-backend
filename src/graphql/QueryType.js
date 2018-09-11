@@ -1,5 +1,5 @@
 // @flow
-import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLID } from 'graphql';
+import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLID, GraphQLBoolean } from 'graphql';
 import { connectionArgs, fromGlobalId } from 'graphql-relay';
 
 import UserType, { UserConnection } from '../modules/user/UserType';
@@ -67,8 +67,8 @@ export default new GraphQLObjectType({
       description: 'Get orders',
       args: {
         ...connectionArgs,
-        search: {
-          type: GraphQLString,
+        active: {
+          type: GraphQLBoolean,
         },
       },
       resolve: async (root, args, context) => OrderLoader.loadOrders(context, args),
