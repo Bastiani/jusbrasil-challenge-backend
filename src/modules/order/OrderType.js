@@ -1,4 +1,12 @@
-import { GraphQLBoolean, GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt } from 'graphql';
+import {
+  GraphQLBoolean,
+  GraphQLList,
+  GraphQLObjectType,
+  GraphQLNonNull,
+  GraphQLString,
+  GraphQLInt,
+  GraphQLFloat,
+} from 'graphql';
 import { globalIdField } from 'graphql-relay';
 
 import { connectionDefinitions } from '../../graphql/connection/customConnection';
@@ -33,7 +41,7 @@ const OrderType = registerType(
           resolve: order => order.qty,
         },
         total: {
-          type: GraphQLInt,
+          type: GraphQLFloat,
           description: 'Total of the products',
           resolve: order => order.total,
         },

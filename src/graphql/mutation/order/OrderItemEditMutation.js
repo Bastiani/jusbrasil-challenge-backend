@@ -1,8 +1,8 @@
 import { GraphQLString, GraphQLNonNull, GraphQLEnumType } from 'graphql';
-import { mutationWithClientMutationId } from 'graphql-relay';
+import { mutationWithClientMutationId, toGlobalId } from 'graphql-relay';
 
 import * as OrderLoader from '../../../modules/order/OrderLoader';
-import OrderType from '../../../modules/order/OrderType';
+import { OrderConnection } from '../../../modules/order/OrderType';
 
 import OrderItemFieldsType from '../../../modules/order/OrderItemFieldsType';
 
@@ -43,9 +43,21 @@ const mutation = mutationWithClientMutationId({
     };
   },
   outputFields: {
-    order: {
-      type: OrderType,
-      resolve: async ({ id }, args, context) => OrderLoader.load(context, id),
+    orderEdge: {
+      type: OrderConnection.edgeType,
+      resolve: async ({ id }, args, context) => {
+        const order = await OrderLoader.load(context, id);
+
+        // Returns null if no node was loaded
+        if (!order) {
+          return null;
+        }
+
+        return {
+          cursor: toGlobalId('Order', order._id),
+          node: order,
+        };
+      },
     },
     error: {
       type: GraphQLString,

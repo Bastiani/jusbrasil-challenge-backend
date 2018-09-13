@@ -1,10 +1,10 @@
 import { GraphQLString } from 'graphql';
-import { mutationWithClientMutationId, fromGlobalId } from 'graphql-relay';
+import { mutationWithClientMutationId, fromGlobalId, toGlobalId } from 'graphql-relay';
 
 import OrderModel from '../../../modules/order/OrderModel';
 
 import * as OrderLoader from '../../../modules/order/OrderLoader';
-import OrderType from '../../../modules/order/OrderType';
+import { OrderConnection } from '../../../modules/order/OrderType';
 
 import OrderItemFieldsType from '../../../modules/order/OrderItemFieldsType';
 
@@ -18,6 +18,7 @@ const mutation = mutationWithClientMutationId({
   },
   mutateAndGetPayload: async (args, context) => {
     const { orderId, product, qty } = args;
+    let errorMessage = null;
 
     // Check if the provided ID is valid
     const order = await OrderModel.findOne({
@@ -35,11 +36,11 @@ const mutation = mutationWithClientMutationId({
 
     if (orderWithItem) {
       const { message } = await EditItem(orderId, product, qty, OPERATION_TYPE.ADD);
-      if (message) throw new Error('Error while editing item');
+      errorMessage = message;
     } else {
       const { qty: orderQty, total: orderTotal } = order;
-
-      const newItem = await AddItem(product, qty);
+      const { item: newItem, message } = await AddItem(product, qty);
+      errorMessage = message;
       const { total: totalItem } = newItem;
 
       const totalValueOrder = orderTotal + totalItem;
@@ -63,20 +64,24 @@ const mutation = mutationWithClientMutationId({
 
     return {
       id: order._id,
-      error: null,
+      error: errorMessage,
     };
   },
   outputFields: {
-    order: {
-      type: OrderType,
+    orderEdge: {
+      type: OrderConnection.edgeType,
       resolve: async ({ id }, args, context) => {
-        const newOrder = await OrderLoader.load(context, id);
+        const order = await OrderLoader.load(context, id);
 
-        if (!newOrder) {
+        // Returns null if no node was loaded
+        if (!order) {
           return null;
         }
 
-        return newOrder;
+        return {
+          cursor: toGlobalId('Order', order._id),
+          node: order,
+        };
       },
     },
     error: {

@@ -14,6 +14,7 @@ import OrderAddMutation from './mutation/order/OrderAddMutation';
 import OrderCloseMutation from './mutation/order/OrderCloseMutation';
 import OrderItemAddMutation from './mutation/order/OrderItemAddMutation';
 import OrderItemEditMutation from './mutation/order/OrderItemEditMutation';
+import OrderItemRemoveMutation from './mutation/order/OrderItemRemoveMutation';
 
 export default new GraphQLObjectType({
   name: 'Mutation',
@@ -28,5 +29,6 @@ export default new GraphQLObjectType({
     OrderCloseMutation,
     OrderItemAddMutation,
     OrderItemEditMutation,
+    OrderItemRemoveMutation,
   }),
 });

@@ -1,10 +1,10 @@
 import { GraphQLString } from 'graphql';
-import { mutationWithClientMutationId } from 'graphql-relay';
+import { mutationWithClientMutationId, toGlobalId } from 'graphql-relay';
 
 import OrderModel from '../../../modules/order/OrderModel';
 
 import * as OrderLoader from '../../../modules/order/OrderLoader';
-import OrderType from '../../../modules/order/OrderType';
+import { OrderConnection } from '../../../modules/order/OrderType';
 import OrderItemFieldsType from '../../../modules/order/OrderItemFieldsType';
 
 import AddItem from './AddItem';
@@ -23,7 +23,7 @@ const mutation = mutationWithClientMutationId({
       qty,
     }).save();
 
-    const newItem = await AddItem(product, qty);
+    const { item: newItem, message } = await AddItem(product, qty);
     const { qty: totalQtyItem, total: totalItem } = newItem;
 
     await OrderModel.findOneAndUpdate(
@@ -43,20 +43,24 @@ const mutation = mutationWithClientMutationId({
 
     return {
       id: newOrder._id,
-      error: null,
+      error: message,
     };
   },
   outputFields: {
-    order: {
-      type: OrderType,
+    orderEdge: {
+      type: OrderConnection.edgeType,
       resolve: async ({ id }, args, context) => {
-        const newOrder = await OrderLoader.load(context, id);
+        const order = await OrderLoader.load(context, id);
 
-        if (!newOrder) {
+        // Returns null if no node was loaded
+        if (!order) {
           return null;
         }
 
-        return newOrder;
+        return {
+          cursor: toGlobalId('Order', order._id),
+          node: order,
+        };
       },
     },
     error: {

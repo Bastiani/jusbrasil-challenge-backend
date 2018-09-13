@@ -1,11 +1,11 @@
 import { GraphQLString, GraphQLBoolean, GraphQLNonNull } from 'graphql';
-import { mutationWithClientMutationId, fromGlobalId } from 'graphql-relay';
+import { mutationWithClientMutationId, fromGlobalId, toGlobalId } from 'graphql-relay';
 
 import OrderModel from '../../../modules/order/OrderModel';
 import ProductModel from '../../../modules/product/ProductModel';
 
 import * as OrderLoader from '../../../modules/order/OrderLoader';
-import OrderType from '../../../modules/order/OrderType';
+import { OrderConnection } from '../../../modules/order/OrderType';
 
 const mutation = mutationWithClientMutationId({
   name: 'OrderClose',
@@ -52,9 +52,21 @@ const mutation = mutationWithClientMutationId({
     };
   },
   outputFields: {
-    order: {
-      type: OrderType,
-      resolve: async ({ id }, args, context) => OrderLoader.load(context, id),
+    orderEdge: {
+      type: OrderConnection.edgeType,
+      resolve: async ({ id }, args, context) => {
+        const order = await OrderLoader.load(context, id);
+
+        // Returns null if no node was loaded
+        if (!order) {
+          return null;
+        }
+
+        return {
+          cursor: toGlobalId('Order', order._id),
+          node: order,
+        };
+      },
     },
     error: {
       type: GraphQLString,
