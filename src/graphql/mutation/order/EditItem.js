@@ -9,7 +9,7 @@ export const OPERATION_TYPE = {
   REMOVE: 'REMOVE',
 };
 
-const EditItem = async (orderId: string, product: string, qty: number, operation) => {
+const EditItem = async (orderId: string, product: string, qty: number) => {
   try {
     // Check if the provided ID is valid
     const order = await OrderModel.findOne({
