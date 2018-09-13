@@ -1,5 +1,5 @@
 import { GraphQLString } from 'graphql';
-import { mutationWithClientMutationId, fromGlobalId, toGlobalId } from 'graphql-relay';
+import { mutationWithClientMutationId, fromGlobalId } from 'graphql-relay';
 
 import OrderModel from '../../../modules/order/OrderModel';
 
@@ -9,7 +9,7 @@ import OrderType from '../../../modules/order/OrderType';
 import OrderItemFieldsType from '../../../modules/order/OrderItemFieldsType';
 
 import AddItem from './AddItem';
-import EditItem, { OPERATION_TYPE } from './EditItem';
+import EditItem from './EditItem';
 
 const mutation = mutationWithClientMutationId({
   name: 'OrderItemAdd',
@@ -35,7 +35,7 @@ const mutation = mutationWithClientMutationId({
     });
 
     if (orderWithItem) {
-      const { message } = await EditItem(orderId, product, qty, OPERATION_TYPE.ADD, orderWithItem.qty);
+      const { message } = await EditItem(orderId, product, qty);
       errorMessage = message;
     } else {
       const { qty: orderQty, total: orderTotal } = order;
