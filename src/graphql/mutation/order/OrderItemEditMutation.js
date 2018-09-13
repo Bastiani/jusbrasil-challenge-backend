@@ -1,4 +1,4 @@
-import { GraphQLString, GraphQLNonNull, GraphQLEnumType } from 'graphql';
+import { GraphQLString } from 'graphql';
 import { mutationWithClientMutationId } from 'graphql-relay';
 
 import * as OrderLoader from '../../../modules/order/OrderLoader';
@@ -6,33 +6,17 @@ import OrderType from '../../../modules/order/OrderType';
 
 import OrderItemFieldsType from '../../../modules/order/OrderItemFieldsType';
 
-import EditItem, { OPERATION_TYPE } from './EditItem';
-
-export const OperationType = new GraphQLEnumType({
-  name: 'OperationType',
-  values: {
-    ADD: {
-      value: OPERATION_TYPE.ADD,
-    },
-    REMOVE: {
-      value: OPERATION_TYPE.REMOVE,
-    },
-  },
-});
+import EditItem from './EditItem';
 
 const mutation = mutationWithClientMutationId({
   name: 'OrderItemEdit',
   inputFields: {
     ...OrderItemFieldsType,
-    operation: {
-      type: GraphQLNonNull(OperationType),
-      description: 'Operation of the order item',
-    },
   },
   mutateAndGetPayload: async (args, context) => {
-    const { orderId, product, qty, operation } = args;
+    const { orderId, product, qty } = args;
 
-    const { message } = await EditItem(orderId, product, qty, operation);
+    const { message } = await EditItem(orderId, product, qty);
 
     // Clear dataloader cache
     OrderLoader.clearCache(context, orderId);
