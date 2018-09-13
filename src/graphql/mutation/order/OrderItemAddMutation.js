@@ -35,7 +35,7 @@ const mutation = mutationWithClientMutationId({
     });
 
     if (orderWithItem) {
-      const { message } = await EditItem(orderId, product, qty, OPERATION_TYPE.ADD);
+      const { message } = await EditItem(orderId, product, qty, OPERATION_TYPE.ADD, orderWithItem.qty);
       errorMessage = message;
     } else {
       const { qty: orderQty, total: orderTotal } = order;

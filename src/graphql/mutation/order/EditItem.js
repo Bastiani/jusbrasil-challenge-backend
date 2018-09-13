@@ -39,11 +39,14 @@ const EditItem = async (orderId: string, product: string, qty: number, operation
       { orderItems: { $elemMatch: { product: fromGlobalId(product).id } } },
     );
 
-    const totalQtyItem = operation === OPERATION_TYPE.ADD ? orderItem.orderItems[0].qty + qty : orderItem.orderItems[0].qty - qty;
-    if (totalQtyItem > productQty) throw new Error('Item esgotado!');
-    const totalValueItem = productValue * totalQtyItem;
-    const totalValueOrder = operation === OPERATION_TYPE.ADD ? orderTotal + productValue * qty : orderTotal - productValue * qty;
-    const totalQtyOrder = operation === OPERATION_TYPE.ADD ? orderQty + qty : orderQty - qty;
+    const orderItemQty = orderItem.orderItems[0].qty;
+    const orderItemValue = orderItem.orderItems[0].total;
+
+    if (qty > productQty || qty <= 0) throw new Error('Quantidade invalida!');
+    const totalValueItem = productValue * qty;
+    const totalValueOrder = orderTotal - orderItemValue + totalValueItem;
+
+    const totalQtyOrder = orderQty - orderItemQty + qty;
 
     await OrderModel.findOneAndUpdate(
       {
@@ -53,7 +56,7 @@ const EditItem = async (orderId: string, product: string, qty: number, operation
         $set: {
           qty: totalQtyOrder,
           total: totalValueOrder,
-          'orderItems.$.qty': totalQtyItem,
+          'orderItems.$.qty': qty,
           'orderItems.$.total': totalValueItem,
         },
       },
