@@ -4,11 +4,6 @@ import { fromGlobalId } from 'graphql-relay';
 import OrderModel from '../../../modules/order/OrderModel';
 import ProductModel from '../../../modules/product/ProductModel';
 
-export const OPERATION_TYPE = {
-  ADD: 'ADD',
-  REMOVE: 'REMOVE',
-};
-
 const EditItem = async (orderId: string, product: string, qty: number) => {
   try {
     // Check if the provided ID is valid
