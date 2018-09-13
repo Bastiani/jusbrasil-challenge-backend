@@ -4,7 +4,7 @@ import { mutationWithClientMutationId, fromGlobalId, toGlobalId } from 'graphql-
 import OrderModel from '../../../modules/order/OrderModel';
 
 import * as OrderLoader from '../../../modules/order/OrderLoader';
-import { OrderConnection } from '../../../modules/order/OrderType';
+import OrderType from '../../../modules/order/OrderType';
 
 import OrderItemFieldsType from '../../../modules/order/OrderItemFieldsType';
 
@@ -68,20 +68,16 @@ const mutation = mutationWithClientMutationId({
     };
   },
   outputFields: {
-    orderEdge: {
-      type: OrderConnection.edgeType,
+    order: {
+      type: OrderType,
       resolve: async ({ id }, args, context) => {
-        const order = await OrderLoader.load(context, id);
+        const newOrder = await OrderLoader.load(context, id);
 
-        // Returns null if no node was loaded
-        if (!order) {
+        if (!newOrder) {
           return null;
         }
 
-        return {
-          cursor: toGlobalId('Order', order._id),
-          node: order,
-        };
+        return newOrder;
       },
     },
     error: {

@@ -1,5 +1,5 @@
 import { GraphQLString } from 'graphql';
-import { mutationWithClientMutationId, toGlobalId, fromGlobalId } from 'graphql-relay';
+import { mutationWithClientMutationId, fromGlobalId, toGlobalId } from 'graphql-relay';
 
 import * as OrderLoader from '../../../modules/order/OrderLoader';
 import { OrderConnection } from '../../../modules/order/OrderType';
