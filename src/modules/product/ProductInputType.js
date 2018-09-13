@@ -1,4 +1,4 @@
-import { GraphQLBoolean, GraphQLNonNull, GraphQLString, GraphQLInt } from 'graphql';
+import { GraphQLBoolean, GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLFloat } from 'graphql';
 
 export const ProductInputType = {
   description: {
@@ -6,7 +6,7 @@ export const ProductInputType = {
     description: 'Description of the product',
   },
   value: {
-    type: GraphQLNonNull(GraphQLInt),
+    type: GraphQLNonNull(GraphQLFloat),
     description: 'Value of the product',
   },
   qty: {

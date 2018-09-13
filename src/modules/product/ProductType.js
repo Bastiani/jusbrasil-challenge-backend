@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLBoolean, GraphQLInt } from 'graphql';
+import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLBoolean, GraphQLInt, GraphQLFloat } from 'graphql';
 import { globalIdField } from 'graphql-relay';
 
 import { connectionDefinitions } from '../../graphql/connection/customConnection';
@@ -26,7 +26,7 @@ const ProductType = registerType(
           resolve: product => product.description,
         },
         value: {
-          type: GraphQLNonNull(GraphQLInt),
+          type: GraphQLNonNull(GraphQLFloat),
           description: 'Value of the product',
           resolve: product => product.value,
         },

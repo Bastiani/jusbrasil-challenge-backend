@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt } from 'graphql';
+import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLFloat } from 'graphql';
 
 import { connectionDefinitions } from '../../graphql/connection/customConnection';
 
@@ -31,7 +31,7 @@ const OrderItemType = registerType(
           resolve: obj => obj.qty,
         },
         total: {
-          type: GraphQLNonNull(GraphQLInt),
+          type: GraphQLNonNull(GraphQLFloat),
           description: 'Total of the products',
           resolve: obj => obj.total,
         },

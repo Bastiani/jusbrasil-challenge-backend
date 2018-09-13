@@ -31,7 +31,7 @@ const EditItem = async (orderId: string, product: string, qty: number, operation
       throw new Error('Invalid product');
     }
 
-    const { value: productValue } = productSelected;
+    const { qty: productQty, value: productValue } = productSelected;
     const { qty: orderQty, total: orderTotal } = order;
 
     const orderItem = await OrderModel.findOne(
@@ -40,6 +40,7 @@ const EditItem = async (orderId: string, product: string, qty: number, operation
     );
 
     const totalQtyItem = operation === OPERATION_TYPE.ADD ? orderItem.orderItems[0].qty + qty : orderItem.orderItems[0].qty - qty;
+    if (totalQtyItem > productQty) throw new Error('Item esgotado!');
     const totalValueItem = productValue * totalQtyItem;
     const totalValueOrder = operation === OPERATION_TYPE.ADD ? orderTotal + productValue * qty : orderTotal - productValue * qty;
     const totalQtyOrder = operation === OPERATION_TYPE.ADD ? orderQty + qty : orderQty - qty;
@@ -58,8 +59,8 @@ const EditItem = async (orderId: string, product: string, qty: number, operation
       },
     );
     return { message: null };
-  } catch (err) {
-    return { message: err };
+  } catch (error) {
+    return error;
   }
 };
 
