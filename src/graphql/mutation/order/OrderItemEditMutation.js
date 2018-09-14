@@ -1,8 +1,8 @@
-import { GraphQLString } from 'graphql';
-import { mutationWithClientMutationId } from 'graphql-relay';
+import { GraphQLString, GraphQLBoolean } from 'graphql';
+import { mutationWithClientMutationId, connectionArgs } from 'graphql-relay';
 
 import * as OrderLoader from '../../../modules/order/OrderLoader';
-import OrderType from '../../../modules/order/OrderType';
+import OrderType, { OrderConnection } from '../../../modules/order/OrderType';
 
 import OrderItemFieldsType from '../../../modules/order/OrderItemFieldsType';
 
@@ -38,6 +38,17 @@ const mutation = mutationWithClientMutationId({
 
         return newOrder;
       },
+    },
+    orders: {
+      type: OrderConnection.connectionType,
+      description: 'Get orders',
+      args: {
+        ...connectionArgs,
+        active: {
+          type: GraphQLBoolean,
+        },
+      },
+      resolve: async (root, args, context) => OrderLoader.loadOrders(context, args),
     },
     error: {
       type: GraphQLString,
