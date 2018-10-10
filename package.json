@@ -69,6 +69,7 @@
     "graphql": "^0.13.2",
     "graphql-playground-middleware": "^1.1.2",
     "graphql-relay": "^0.5.5",
+    "graphql-subscriptions": "^1.0.0",
     "jsonwebtoken": "^8.3.0",
     "koa": "^2.4.1",
     "koa-convert": "^1.2.0",
@@ -76,6 +77,7 @@
     "koa-graphql": "^0.7.5",
     "koa-router": "^7.3.0",
     "mongoose": "^5.1.5",
-    "nodemon": "^1.17.5"
+    "nodemon": "^1.17.5",
+    "subscriptions-transport-ws": "^0.9.15"
   }
 }

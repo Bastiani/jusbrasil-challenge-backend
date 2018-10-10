@@ -11,6 +11,7 @@ import { koaPlayground } from 'graphql-playground-middleware';
 import schema from './schema';
 import * as loaders from './graphql/loader';
 import { getUser, getDataloaders } from './helper';
+import { graphqlPort } from './config';
 
 const app = new Koa();
 const router = new Router();
@@ -56,6 +57,7 @@ router.all(
   '/playground',
   koaPlayground({
     endpoint: '/graphql',
+    subscriptionsEndpoint: `ws://localhost:${graphqlPort}/subscriptions`,
   }),
 );
 
