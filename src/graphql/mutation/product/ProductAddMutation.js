@@ -1,11 +1,12 @@
 import { GraphQLString } from 'graphql';
-import { mutationWithClientMutationId } from 'graphql-relay';
+import { mutationWithClientMutationId, toGlobalId } from 'graphql-relay';
 
 import Product from '../../../modules/product/ProductModel';
 
 import * as ProductLoader from '../../../modules/product/ProductLoader';
-import ProductType from '../../../modules/product/ProductType';
+import ProductType, { ProductConnection } from '../../../modules/product/ProductType';
 import { ProductInputType } from '../../../modules/product/ProductInputType';
+import pubSub, { EVENTS } from '../../pubSub';
 
 const mutation = mutationWithClientMutationId({
   name: 'ProductAdd',
@@ -15,7 +16,7 @@ const mutation = mutationWithClientMutationId({
   mutateAndGetPayload: async args => {
     const { description, value, qty, picture, active } = args;
 
-    const newProduct = await new Product({
+    const product = await new Product({
       description,
       value,
       qty,
@@ -23,22 +24,40 @@ const mutation = mutationWithClientMutationId({
       active,
     }).save();
 
+    await pubSub.publish(EVENTS.PRODUCT.ADDED, { ProductAdded: { product } });
+
     return {
-      id: newProduct._id,
+      id: product._id,
       error: null,
     };
   },
   outputFields: {
-    product: {
-      type: ProductType,
-      resolve: async ({ id: productId }, args, context) => {
-        const newProduct = await ProductLoader.load(context, productId);
+    productEdge: {
+      type: ProductConnection.edgeType,
+      resolve: async ({ id }, args, context) => {
+        const product = await ProductLoader.load(context, id);
 
-        if (!newProduct) {
+        // Returns null if no node was loaded
+        if (!product) {
           return null;
         }
 
-        return newProduct;
+        return {
+          cursor: toGlobalId('Order', product._id),
+          node: product,
+        };
+      },
+    },
+    product: {
+      type: ProductType,
+      resolve: async ({ id: productId }, args, context) => {
+        const product = await ProductLoader.load(context, productId);
+
+        if (!product) {
+          return null;
+        }
+
+        return product;
       },
     },
     error: {
